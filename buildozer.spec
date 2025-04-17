@@ -8,6 +8,7 @@ android.build_tools_version = 34.0.0
 android.accept_sdk_license = True
 p4a.branch = develop
 
+
 # (str) Title of your application
 title = My Application
 
