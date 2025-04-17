@@ -24,7 +24,7 @@ jobs:
         sudo apt update
         sudo apt install -y zip unzip openjdk-17-jdk git \
           libffi-dev libssl-dev libgmp-dev m4 gfortran \
-          pkg-config autoconf automake libtool build-essential   
+          pkg-config autoconf automake libtool build-essential
 
 
     - name: Install Python dependencies
