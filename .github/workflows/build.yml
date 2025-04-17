@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.1  # ← 반드시 3.10 사용
+        python-version: 3.11  # ← 반드시 3.10 사용
 
     - name: Install dependencies
       run: |
