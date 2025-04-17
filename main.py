@@ -77,6 +77,43 @@ def load_csv_file(file_path):
         return None, None
 
 class MainScreen(Screen):
+
+    def select_csv_file(self):
+        from kivy.uix.popup import Popup
+        from kivy.uix.filechooser import FileChooserIconView
+        from kivy.utils import platform
+        if platform == 'android':
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+
+        try:
+            filechooser = FileChooserIconView()
+            popup = Popup(title="CSV 파일 선택", content=filechooser, size_hint=(0.9, 0.9))
+
+            def on_file_selected(instance, selection):
+                if selection:
+                    selected_path = selection[0]
+                    self.csv_path = selected_path
+                    popup.dismiss()
+                    self.show_popup(f"선택된 파일:
+{selected_path}")
+                    self.process_csv(selected_path)
+                else:
+                    self.show_popup("파일이 선택되지 않았습니다.")
+            filechooser.bind(on_submit=on_file_selected)
+            popup.open()
+        except Exception as e:
+            self.show_popup(f"오류 발생: {str(e)}")
+
+
+    def show_popup(self, message):
+        from kivy.uix.popup import Popup
+        from kivy.uix.label import Label
+        popup = Popup(title='알림',
+                      content=Label(text=message),
+                      size_hint=(0.8, 0.3))
+        popup.open()
+    
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.acceleration_data = []
@@ -90,6 +127,43 @@ class MainScreen(Screen):
 
 # ----------------------- 그래프 위젯 -----------------------
 class GraphWidget(BoxLayout):
+
+    def select_csv_file(self):
+        from kivy.uix.popup import Popup
+        from kivy.uix.filechooser import FileChooserIconView
+        from kivy.utils import platform
+        if platform == 'android':
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+
+        try:
+            filechooser = FileChooserIconView()
+            popup = Popup(title="CSV 파일 선택", content=filechooser, size_hint=(0.9, 0.9))
+
+            def on_file_selected(instance, selection):
+                if selection:
+                    selected_path = selection[0]
+                    self.csv_path = selected_path
+                    popup.dismiss()
+                    self.show_popup(f"선택된 파일:
+{selected_path}")
+                    self.process_csv(selected_path)
+                else:
+                    self.show_popup("파일이 선택되지 않았습니다.")
+            filechooser.bind(on_submit=on_file_selected)
+            popup.open()
+        except Exception as e:
+            self.show_popup(f"오류 발생: {str(e)}")
+
+
+    def show_popup(self, message):
+        from kivy.uix.popup import Popup
+        from kivy.uix.label import Label
+        popup = Popup(title='알림',
+                      content=Label(text=message),
+                      size_hint=(0.8, 0.3))
+        popup.open()
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
@@ -146,6 +220,43 @@ class GraphWidget(BoxLayout):
 
 # ----------------------- 메인 앱 -----------------------
 class FFTApp(App):
+
+    def select_csv_file(self):
+        from kivy.uix.popup import Popup
+        from kivy.uix.filechooser import FileChooserIconView
+        from kivy.utils import platform
+        if platform == 'android':
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+
+        try:
+            filechooser = FileChooserIconView()
+            popup = Popup(title="CSV 파일 선택", content=filechooser, size_hint=(0.9, 0.9))
+
+            def on_file_selected(instance, selection):
+                if selection:
+                    selected_path = selection[0]
+                    self.csv_path = selected_path
+                    popup.dismiss()
+                    self.show_popup(f"선택된 파일:
+{selected_path}")
+                    self.process_csv(selected_path)
+                else:
+                    self.show_popup("파일이 선택되지 않았습니다.")
+            filechooser.bind(on_submit=on_file_selected)
+            popup.open()
+        except Exception as e:
+            self.show_popup(f"오류 발생: {str(e)}")
+
+
+    def show_popup(self, message):
+        from kivy.uix.popup import Popup
+        from kivy.uix.label import Label
+        popup = Popup(title='알림',
+                      content=Label(text=message),
+                      size_hint=(0.8, 0.3))
+        popup.open()
+    
     def build(self):
         self.layout = BoxLayout(orientation='vertical', spacing=5, padding=5)
 
