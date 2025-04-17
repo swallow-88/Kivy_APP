@@ -3,9 +3,9 @@
 # (int) Target Android API, should be as high as possible.
 android.api = 34
 android.build_tools_version = 34.0.0
+android.accept_sdk_license = True
 p4a.branch = develop
-android_accept_sdk_license = True
-p4a.commit = 8fdc11144b0d7b5a4379c92d2d50282d8c7f1347
+
 # (str) Title of your application
 title = My Application
 
