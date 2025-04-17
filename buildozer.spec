@@ -120,6 +120,7 @@ fullscreen = 0
 android.build_tools_version = 34.0.0
 android.api = 34
 
+
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
 
