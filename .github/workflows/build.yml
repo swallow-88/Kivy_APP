@@ -25,6 +25,11 @@ jobs:
           libffi-dev libssl-dev libgmp-dev m4 gfortran \
           pkg-config autoconf automake libtool build-essential gettext
 
+
+    - name: Initialize libtool (for LT_SYS_SYMBOL_USCORE)
+      run: libtoolize
+
+
     - name: Install Python dependencies
       run: |
         pip install --upgrade pip
