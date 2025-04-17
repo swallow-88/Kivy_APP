@@ -18,14 +18,12 @@ jobs:
       with:
         python-version: '3.11'
 
-
     - name: Install system dependencies
       run: |
         sudo apt update
         sudo apt install -y zip unzip openjdk-17-jdk git \
           libffi-dev libssl-dev libgmp-dev m4 gfortran \
-          pkg-config autoconf automake libtool build-essential
-          gettext
+          pkg-config autoconf automake libtool build-essential gettext
 
     - name: Install Python dependencies
       run: |
