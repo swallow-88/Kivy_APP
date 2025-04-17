@@ -101,7 +101,7 @@ fullscreen = 0
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-#android.api = 31
+#android.api = 34
 
 # (int) Minimum API your APK / AAB will support.
 #android.minapi = 21
@@ -118,8 +118,6 @@ fullscreen = 0
 # buildozer.spec 파일 내 아래 항목을 찾아서 수정합니다
 
 android.build_tools_version = 34.0.0
-android.api = 34
-
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
