@@ -27,6 +27,9 @@ jobs:
 
       - name: Clean previous buildozer config
         run: rm -rf .buildozer
+        
+      - name: Clean buildozer cache
+        run: rm -rf .buildozer
 
       - name: Build APK
         run: buildozer android debug
