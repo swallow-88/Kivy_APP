@@ -115,6 +115,11 @@ fullscreen = 0
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
 #android.ndk_api = 21
 
+# buildozer.spec 파일 내 아래 항목을 찾아서 수정합니다
+
+android.build_tools_version = 34.0.0
+android.api = 34
+
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
 
