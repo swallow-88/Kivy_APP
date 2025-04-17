@@ -118,6 +118,7 @@ android.api = 34
 # buildozer.spec 파일 내 아래 항목을 찾아서 수정합니다
 
 android.build_tools_version = 34.0.0
+p4a.branch = develop
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
