@@ -45,6 +45,7 @@ jobs:
 
     - name: Build APK
       run: buildozer android debug
+      run: buildozer --log-level 1 android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
