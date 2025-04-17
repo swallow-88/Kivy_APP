@@ -2,6 +2,8 @@
 
 # (int) Target Android API, should be as high as possible.
 android.api = 34
+android.minapi = 24
+android.ndk_api = 24
 android.build_tools_version = 34.0.0
 android.accept_sdk_license = True
 p4a.branch = develop
