@@ -23,16 +23,22 @@ jobs:
         sudo apt update
         sudo apt install -y zip unzip openjdk-17-jdk git \
           libffi-dev libssl-dev libgmp-dev m4 gfortran \
-          pkg-config autoconf automake libtool build-essential
+          pkg-config autoconf automake libtool build-essential \
+          gettext libltdl-dev
 
-    - name: Initialize libtool (fix LT_SYS_SYMBOL_USCORE)
+    - name: Fix libtool macros (LT_SYS_SYMBOL_USCORE)
       run: |
+        echo "m4_pattern_allow([LT_SYS_SYMBOL_USCORE])" >> configure.ac || true
         libtoolize --force --copy
+        aclocal
+        autoheader || true
+        autoconf || true
+        automake --add-missing || true
 
     - name: Install Python dependencies
       run: |
         pip install --upgrade pip
-        pip install buildozer cython virtualenv
+        pip install buildozer cython virtualenv python-for-android
 
     - name: Clean .buildozer
       run: rm -rf .buildozer
