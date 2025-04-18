@@ -2,38 +2,58 @@ name: Build Kivy APK
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
 
-    - name: Install system dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y zip unzip openjdk-17-jdk \
-        libffi-dev libssl-dev autoconf automake build-essential libtool python3-pip
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y libgl1-mesa-dev zip unzip openjdk-17-jdk
+          pip install --upgrade pip
+          pip install buildozer cython virtualenv requests setuptools
+          pip install git+https://github.com/kivy/python-for-android.git@develop
 
-    - name: Clean previous build cache
-      run: |
-        rm -rf .buildozer
+      - name: Create .buildozer directory
+        run: |
+          mkdir -p ~/.buildozer
+          mkdir -p .buildozer
 
-    - name: Install Python dependencies
-      run: |
-        pip install --upgrade pip cython setuptools buildozer kivy plyer numpy
-        pip install kivy-garden
-        python -m pip install kivy_garden.graph
-        
-    - name: Build APK
-      run: |
-        buildozer android debug --log-level 2
+      - name: Install garden.graph
+        run: |
+          pip install kivy-garden
+          ~/.local/bin/garden install graph || echo "Garden 설치 실패 무시"
+
+      - name: Build APK with detailed logs
+        run: |
+          python3 -m pythonforandroid.toolchain create \
+            --dist_name=myapp \
+            --bootstrap=sdl2 \
+            --requirements=python3,kivy,numpy,plyer,setuptools \
+            --arch=arm64-v8a \
+            --arch=armeabi-v7a \
+            --copy-libs \
+            --color=always \
+            --storage-dir=.buildozer/android/platform/build-arm64-v8a_armeabi-v7a \
+            --ndk-api=24 \
+            --log-level=2
+        env:
+          P4A_LOG_LEVEL: 2
+
+      - name: Debug failure logs
+        if: failure()
+        run: |
+          echo "빌드 실패. 로그 확인 중..."
+          find . -name "*.log" -exec cat {} \;
