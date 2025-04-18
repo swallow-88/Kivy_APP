@@ -30,6 +30,13 @@ jobs:
       run: |
         rm -rf .buildozer
 
+    - name: Clean old build
+      run: rm -rf .buildozer
+    
+    - name: Install garden graph widget
+      run: |
+        pip install kivy-garden
+        garden install graph
 
     - name: Install Kivy Garden Graph
       run: |
