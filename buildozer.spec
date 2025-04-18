@@ -46,7 +46,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.10,kivy,numpy,player,kivy-garden.graph,setuptools
+requirements = python3==3.10,kivy,numpy,kivy-garden.graph,setuptools
 
 # (list) Garden requirements
 #garden_requirements = graph
