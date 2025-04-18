@@ -40,3 +40,10 @@ jobs:
         with:
           name: built-apk
           path: bin/*.apk
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: my-artifact
+          path: ./downloaded/
+
+          
