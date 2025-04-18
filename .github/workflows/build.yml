@@ -63,7 +63,7 @@ jobs:
         tail -n 100 build_log.txt
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: app-release
         path: path/to/your/apk/file.apk
