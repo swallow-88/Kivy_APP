@@ -9,8 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
+  steps:
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -25,16 +25,17 @@ jobs:
           libtool libffi-dev build-essential autoconf automake
         pip install --upgrade pip
         pip install buildozer cython virtualenv
-        pip install kivy-garden
-        python -m garden install graph
+
+    - name: Install Kivy Garden Graph
+      run: |
+        pip install --user kivy-garden
+        garden_bin=$(python3 -m site --user-base)/bin/garden
+        chmod +x "$garden_bin"
+        "$garden_bin" install graph
 
     - name: Build APK
       run: |
-        buildozer android debug --log-level 2
-
-
-    - name: Build APK
-      run: |
+        export PATH="$PATH:$(python3 -m site --user-base)/bin"
         buildozer android debug --log-level 2
         
     - name: Encode APK to base64
