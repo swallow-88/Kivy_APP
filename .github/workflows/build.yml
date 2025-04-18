@@ -1,69 +1,52 @@
-name: Build Kivy Android APK
+name: Build Kivy APK
 
-on: 
+on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+  actions: read
+
 jobs:
-  build: 
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out repository
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: "3.10"
+        python-version: 3.10
 
-    - name: Install system dependencies
+    - name: Install dependencies
       run: |
-        sudo apt update
-        sudo apt install -y \
-          unzip zip openjdk-17-jdk \
-          python3-pip python3-setuptools python3-wheel \
-          libtool autoconf automake \
-          pkg-config zlib1g-dev libncurses5 libffi-dev \
-          libssl-dev git-core build-essential \
-          ccache libsqlite3-dev libpng-dev libjpeg-dev \
-          libfreetype6-dev libgl1-mesa-dev libgles2-mesa-dev \
-          libmtdev-dev xclip xsel libffi-dev \
-          libxslt-dev libxml2-dev libreadline-dev
+        python -m pip install --upgrade pip
+        pip install buildozer cython
 
-    - name: Install buildozer and dependencies
-      run: |
-        python3 -m pip install --upgrade pip setuptools wheel
-        python3 -m pip install buildozer Cython virtualenv
-
-    - name: Create buildozer.spec if not exists
+    - name: Initialize buildozer.spec if missing
       run: |
         if [ ! -f buildozer.spec ]; then
           buildozer init
         fi
 
-    - name: Print working directory and files
+    - name: Fix permissions (optional)
       run: |
-        echo "Current directory:"
-        pwd
-        echo "Files:"
-        ls -la
-
-    - name: Set up environment variables
-      run: |
-        echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" >> $GITHUB_ENV
+        chmod +x ./main.py || true
 
     - name: Build APK
       run: |
-        buildozer android debug | tee build_log.txt
-
-    - name: Show last 100 lines of build log
-      if: failure()
-      run: |
-        echo "------ 빌드 실패: 최근 100줄 로그 ------"
-        tail -n 100 build_log.txt
+        sudo apt-get update
+        sudo apt-get install -y zip unzip openjdk-17-jdk
+        buildozer android debug
 
     - name: Upload APK
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
-        name: app-release
-        path: path/to/your/apk/file.apk
+        name: fftapp-debug-apk
+        path: bin/*.apk
