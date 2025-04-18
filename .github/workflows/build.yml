@@ -51,13 +51,13 @@ jobs:
       run: |
         sed -i 's/^android.arch = .*/android.arch = arm64-v8a/' buildozer.spec
     
-    - name: Save buildozer logs on failure
+    - name: Save Buildozer logs on failure
       if: failure()
       run: |
         mkdir -p buildozer_logs
         find .buildozer -name "*.log" -exec cp --parents {} buildozer_logs \; || true
 
-    - name: Upload buildozer logs
+    - name: Upload Buildozer logs
       if: failure()
       uses: actions/upload-artifact@v4
       with:
