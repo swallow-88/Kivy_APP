@@ -30,10 +30,12 @@ jobs:
 
       - name: Clean previous build and build APK
         run: |
-          buildozer android clean
           rm -rf .buildozer
+          rm -rf bin
+          rm -rf ~/.buildozer
+          buildozer android clean
           buildozer android debug
-      
+            
       - name: Create .buildozer directory
         run: |
           mkdir -p ~/.buildozer
