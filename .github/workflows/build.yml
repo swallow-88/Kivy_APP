@@ -32,7 +32,7 @@ jobs:
         run: |
           buildozer android clean
           rm -rf .buildozer
-          buildozer android debu
+          buildozer android debug
       
       - name: Create .buildozer directory
         run: |
