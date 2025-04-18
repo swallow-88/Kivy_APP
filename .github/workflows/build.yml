@@ -47,6 +47,12 @@ jobs:
 
     - name: Build APK with logs to console
       run: buildozer android debug --log-level 2
+      env:
+        P4A_RELEASE_KEYSTORE_PASS: ''
+        P4A_RELEASE_KEYALIAS_PASS: ''
+        P4A_RELEASE_KEYALIAS: ''
+        P4A_RELEASE_KEYSTORE: ''
+          
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
