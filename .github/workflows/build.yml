@@ -1,19 +1,14 @@
 name: Build Kivy APK
 
 on:
-  workflow_dispatch:  # 수동 실행 가능
-  push:
-    branches: [ main ]  # main 브랜치에 push될 때 실행
-
-permissions:
-  contents: read
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -21,21 +16,48 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
         sudo apt update
-        sudo apt install -y zip unzip openjdk-17-jdk autoconf libtool pkg-config libffi-dev libssl-dev \
-                            libncurses5 libstdc++6 libsqlite3-dev libgstreamer1.0-dev
-        python -m pip install --upgrade pip
-        pip install --upgrade Cython virtualenv
-        pip install buildozer
+        sudo apt install -y \
+          build-essential \
+          libncurses5:i386 \
+          libstdc++6:i386 \
+          libgtk2.0-0:i386 \
+          libpangox-1.0-0:i386 \
+          libpangoxft-1.0-0:i386 \
+          zlib1g:i386 \
+          libbz2-1.0:i386 \
+          libssl-dev \
+          libffi-dev \
+          libsqlite3-dev \
+          git \
+          zip \
+          unzip \
+          openjdk-17-jdk \
+          python3-pip \
+          python3-setuptools
 
-    - name: Build APK
+    - name: Install Buildozer
       run: |
+        pip install --upgrade pip setuptools
+        pip install buildozer cython virtualenv
+
+    - name: Cache .buildozer directory
+      uses: actions/cache@v3
+      with:
+        path: .buildozer
+        key: ${{ runner.os }}-buildozer-${{ hashFiles('**/buildozer.spec') }}
+        restore-keys: |
+          ${{ runner.os }}-buildozer-
+
+    - name: Initialize Buildozer
+      run: |
+        buildozer android clean
         buildozer android debug
 
     - name: Upload APK
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
-        name: fftapp-debug-apk
+        name: kivy-apk
         path: bin/*.apk
