@@ -49,7 +49,7 @@ version = 0.1
 #requirements = python3==3.10,kivy,numpy,kivy-garden.graph,setuptools
 #requirements = python3==3.10,kivy,numpy,setuptools
 #requirements = python3==3.10,kivy,numpy,kivy_garden.graph,setuptools,plyer
-requirements = python3==3.11,kivy,numpy,plyer,kivy_garden.graph,setuptools
+requirements = python3==3.10,kivy,numpy,plyer,kivy_garden.graph,setuptools
 
 # (list) Garden requirements
 #garden_requirements = graph
