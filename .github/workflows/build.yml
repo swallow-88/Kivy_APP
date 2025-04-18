@@ -20,12 +20,20 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          pip install --upgrade buildozer cython
+          pip install --upgrade python-for-android  
           sudo apt update
           sudo apt install -y libgl1-mesa-dev zip unzip openjdk-17-jdk
           pip install --upgrade pip
           pip install buildozer cython virtualenv requests setuptools
           pip install git+https://github.com/kivy/python-for-android.git@develop
 
+      - name: Clean previous build and build APK
+        run: |
+          buildozer android clean
+          rm -rf .buildozer
+          buildozer android debu
+      
       - name: Create .buildozer directory
         run: |
           mkdir -p ~/.buildozer
