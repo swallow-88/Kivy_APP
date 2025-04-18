@@ -29,8 +29,8 @@ jobs:
 
     - name: Build APK
       run: |
-        buildozer --log-level 2 android debug
-
+        buildozer android debug --log-level 2
+        
     - name: Encode APK to base64
       run: |
         echo "==== APK base64 begin ===="
