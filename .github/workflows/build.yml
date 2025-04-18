@@ -1,8 +1,6 @@
-name: Build Kivy APK
+name: Build Kivy Android APK
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,52 +8,62 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Check out repository
       uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: "3.10"
 
     - name: Install system dependencies
       run: |
         sudo apt update
-        sudo apt install -y zip unzip openjdk-17-jdk git \
-          libffi-dev libssl-dev libgmp-dev m4 gfortran \
-          pkg-config autoconf automake libtool build-essential \
-          gettext libltdl-dev
+        sudo apt install -y \
+          unzip zip openjdk-17-jdk \
+          python3-pip python3-setuptools python3-wheel \
+          libtool autoconf automake \
+          pkg-config zlib1g-dev libncurses5 libffi-dev \
+          libssl-dev git-core build-essential \
+          ccache libsqlite3-dev libpng-dev libjpeg-dev \
+          libfreetype6-dev libgl1-mesa-dev libgles2-mesa-dev \
+          libmtdev-dev xclip xsel libffi-dev \
+          libxslt-dev libxml2-dev libreadline-dev
 
-    - name: Fix libtool macros (LT_SYS_SYMBOL_USCORE)
+    - name: Install buildozer and dependencies
       run: |
-        if grep -q 'LT_SYS_SYMBOL_USCORE' configure.ac; then
-          echo 'm4_pattern_allow([LT_SYS_SYMBOL_USCORE])' | cat - configure.ac > temp && mv temp configure.ac
+        python3 -m pip install --upgrade pip setuptools wheel
+        python3 -m pip install buildozer Cython virtualenv
+
+    - name: Create buildozer.spec if not exists
+      run: |
+        if [ ! -f buildozer.spec ]; then
+          buildozer init
         fi
-        libtoolize --force --copy || true
-        aclocal || true
-        autoheader || true
-        autoconf || true
-        automake --add-missing || true
 
-    - name: Install Python dependencies
+    - name: Print working directory and files
       run: |
-        pip install --upgrade pip
-        pip install buildozer cython virtualenv python-for-android
+        echo "Current directory:"
+        pwd
+        echo "Files:"
+        ls -la
 
-    - name: Clean .buildozer
-      run: rm -rf .buildozer
+    - name: Set up environment variables
+      run: |
+        echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" >> $GITHUB_ENV
 
-    - name: Build APK with logs to console
-      run: buildozer android debug --log-level 2
-      env:
-        P4A_RELEASE_KEYSTORE_PASS: ''
-        P4A_RELEASE_KEYALIAS_PASS: ''
-        P4A_RELEASE_KEYALIAS: ''
-        P4A_RELEASE_KEYSTORE: ''
-          
+    - name: Build APK
+      run: |
+        buildozer android debug | tee build_log.txt
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
+    - name: Show last 100 lines of build log
+      if: failure()
+      run: |
+        echo "------ 빌드 실패: 최근 100줄 로그 ------"
+        tail -n 100 build_log.txt
+
+    - name: Upload APK file
+      uses: actions/upload-artifact@v3
       with:
-        name: kivy-app
+        name: APK
         path: bin/*.apk
