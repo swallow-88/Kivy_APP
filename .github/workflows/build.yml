@@ -1,21 +1,19 @@
-name: Build Kivy Android APK
+name: Build Kivy APK
 
 on:
+  workflow_dispatch:  # 수동 실행 가능
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main ]  # main 브랜치에 push될 때 실행
 
 permissions:
   contents: read
-  actions: read
-  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout Repository
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -26,15 +24,14 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y build-essential git zip unzip openjdk-17-jdk autoconf libtool pkg-config
+        sudo apt install -y zip unzip openjdk-17-jdk autoconf libtool pkg-config libffi-dev libssl-dev \
+                            libncurses5 libstdc++6 libsqlite3-dev libgstreamer1.0-dev
         python -m pip install --upgrade pip
-        pip install --upgrade cython virtualenv
+        pip install --upgrade Cython virtualenv
         pip install buildozer
 
-    - name: Build APK with Buildozer
+    - name: Build APK
       run: |
-        sudo apt install -y libffi-dev libssl-dev
-        sudo apt install -y libncurses5 libstdc++6 libsqlite3-dev libgstreamer1.0 libgstreamer1.0-dev
         buildozer android debug
 
     - name: Upload APK
