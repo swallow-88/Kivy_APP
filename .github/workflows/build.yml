@@ -33,8 +33,7 @@ jobs:
         pip install --upgrade pip cython setuptools buildozer kivy plyer numpy
         pip install kivy-garden
         python -m pip install kivy_garden.graph
-
+        
     - name: Build APK
       run: |
- 
-        buildozer --log-level 2 android debug
+        buildozer android debug --log-level 2
