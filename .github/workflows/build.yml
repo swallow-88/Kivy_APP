@@ -62,8 +62,8 @@ jobs:
         echo "------ 빌드 실패: 최근 100줄 로그 ------"
         tail -n 100 build_log.txt
 
-    - name: Upload APK file
+    - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
-        name: APK
-        path: bin/*.apk
+        name: app-release
+        path: path/to/your/apk/file.apk
