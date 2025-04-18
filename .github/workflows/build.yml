@@ -57,6 +57,14 @@ jobs:
         mkdir -p logs
         find .buildozer -name "*.log" -exec cp --parents {} logs \; || true
         cp -r .buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds logs/full_build_logs || true
+    
+    - name: Output Buildozer Log Summary
+      if: failure()
+      run: |
+        echo "::group::Buildozer Log Tail"
+        tail -n 200 .buildozer/android/platform/build-arm64-v8a/build/other_builds/*/*/*.log || true
+        echo "::endgroup::"
+
 
     - name: Upload logs
       if: failure()
