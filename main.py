@@ -4,9 +4,13 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.uix.popup import Popup
-from kivy.uix.filechooser import FileChooserIconView
 from kivy_garden.graph import Graph, MeshLinePlot
+
+# plyer의 filechooser는 플랫폼마다 다르게 작동하므로 예외처리
+try:
+    from plyer import filechooser
+except ImportError:
+    filechooser = None
 
 
 class MainScreen(BoxLayout):
@@ -41,20 +45,18 @@ class MainScreen(BoxLayout):
         self.add_widget(self.graph)
 
     def select_csv_files(self, instance):
-        content = FileChooserIconView(filters=["*.csv"])
-        popup = Popup(title="CSV 파일 선택 (2개)", content=content, size_hint=(0.9, 0.9))
+        if filechooser:
+            filechooser.open_file(on_selection=self.on_files_selected, filters=["*.csv"])
+        else:
+            self.label.text = "파일 선택 기능을 사용할 수 없습니다."
 
-        def on_selection(*args):
-            if len(content.selection) == 2:
-                self.file_paths = content.selection
-                popup.dismiss()
-                self.label.text = "선택된 파일:\n1. {}\n2. {}".format(
-                    self.file_paths[0], self.file_paths[1]
-                )
-                self.process_csv_files()
-
-        content.bind(on_submit=on_selection)
-        popup.open()
+    def on_files_selected(self, selection):
+        if len(selection) == 2:
+            self.file_paths = selection
+            self.label.text = f"선택된 파일:\n1. {self.file_paths[0]}\n2. {self.file_paths[1]}"
+            self.process_csv_files()
+        else:
+            self.label.text = "CSV 파일 2개를 선택해주세요."
 
     def process_csv_files(self):
         fft_results = []
