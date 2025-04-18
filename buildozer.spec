@@ -49,6 +49,10 @@ version = 0.1
 requirements = python3==3.10,kivy,numpy,plyer,setuptools
 garden_requirements = graph
 
+# (list) Garden requirements
+#garden_requirements = graph
+
+
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
