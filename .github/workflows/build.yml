@@ -36,4 +36,4 @@ jobs:
     - name: Build APK
       run: |
         export PATH="$PATH:$(python3 -m site --user-base)/bin"
-        buildozer android debug --log-level 2
+        buildozer android debug --log-level 2 | tee build_output.log
