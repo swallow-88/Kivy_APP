@@ -50,6 +50,21 @@ jobs:
     - name: Configure buildozer (single arch for faster build)
       run: |
         sed -i 's/^android.arch = .*/android.arch = arm64-v8a/' buildozer.spec
+    
+    - name: Save full log
+      if: failure()
+      run: |
+        mkdir -p logs
+        cp .buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/*.log logs/ || true
+        cp .buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/*/*/*/*.log logs/ || true
+
+    - name: Upload logs
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-logs
+        path: logs
+
 
     - name: Build APK
       run: buildozer android debug
