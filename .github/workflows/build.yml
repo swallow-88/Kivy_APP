@@ -13,39 +13,28 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
         sudo apt update
-        sudo apt install -y zip unzip openjdk-17-jdk python3-pip \
-          libtool libffi-dev build-essential autoconf automake
-        pip install --upgrade pip
-        pip install buildozer cython virtualenv
-        
-    - name: Clean build cache
+        sudo apt install -y zip unzip openjdk-17-jdk \
+        libffi-dev libssl-dev autoconf automake build-essential libtool python3-pip
+
+    - name: Clean previous build cache
       run: |
         rm -rf .buildozer
 
-    - name: Clean old build
-      run: rm -rf .buildozer
-    
-    - name: Install garden graph widget
+    - name: Install Python dependencies
       run: |
+        pip install --upgrade pip cython setuptools buildozer kivy plyer numpy
         pip install kivy-garden
-        garden install graph
-
-    - name: Install Kivy Garden Graph
-      run: |
-        pip install --user kivy-garden
-        garden_bin=$(python3 -m site --user-base)/bin/garden
-        chmod +x "$garden_bin"
-        "$garden_bin" install graph
+        python -m pip install kivy_garden.graph
 
     - name: Build APK
       run: |
-        export PATH="$PATH:$(python3 -m site --user-base)/bin"
-        buildozer android debug --log-level 2 | tee build_output.log
+ 
+        buildozer --log-level 2 android debug
