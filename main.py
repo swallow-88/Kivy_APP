@@ -14,6 +14,17 @@ from kivy.clock import Clock
 from kivy.utils import platform
 from kivy_garden.graph import Graph, MeshLinePlot
 from plyer import filechooser
+from android.permissions import request_permissions, Permission
+from android import mActivity
+from jnius import autoclass, cast
+
+def check_storage_permission():
+    Environment = autoclass('android.os.Environment')
+    if not Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED:
+        raise PermissionError("외부 저장소에 접근할 수 없습니다.")
+
+def request_android_permissions():
+    request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
 
 def smooth_data(data, window_size=10):
     return np.convolve(data, np.ones(window_size)/window_size, mode='same')
@@ -116,7 +127,8 @@ class FFTApp(App):
         popup.open()
 
     def process_csv(self, file_path):
-        time_vals, acc_vals = [], []
+        time_vals = [] 
+        acc_vals = []
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 reader = csv.reader(f)
@@ -125,21 +137,31 @@ class FFTApp(App):
                     try:
                         time_vals.append(float(row[0]))
                         acc_vals.append(float(row[1]))
-                    except:
+                    except (ValueError, IndexError):
                         continue
-        except:
-            with open(file_path, 'r', encoding='cp949') as f:
-                reader = csv.reader(f)
-                next(reader, None)
-                for row in reader:
-                    try:
-                        time_vals.append(float(row[0]))
-                        acc_vals.append(float(row[1]))
-                    except:
-                        continue
+        except FileNotFoundError:
+            self.log("파일을 찾을 수 없습니다.")
+            return [], 1, 1
+        except UnicodeDecodeError:
+            try:
+                with open(file_path, 'r', encoding='cp949') as f:
+                    reader = csv.reader(f)
+                    next(reader, None)
+                    for row in reader:
+                        try:
+                            time_vals.append(float(row[0]))
+                            acc_vals.append(float(row[1]))
+                        except (ValueError, IndexError):
+                            continue
+            except Exception as e:
+                self.log(f"파일 처리 중 오류 발생: {e}")
+                return [], 1, 1
+        except Exception as e:
+            self.log(f"파일 처리 중 오류 발생: {e}")
+            return [], 1, 1
 
         fft_data, x_max, y_max = compute_fft(time_vals, acc_vals)
-        self.log(f"{os.path.basename(file_path)} ì²ë¦¬ ìë£: {len(fft_data)} í¬ì¸í¸")
+        self.log(f"{file_path} 처리 완료: {len(fft_data)}개 포인트")
         return fft_data, x_max, y_max
 
     def select_csv_files(self, instance):
