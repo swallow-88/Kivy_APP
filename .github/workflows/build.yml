@@ -1,4 +1,4 @@
-name: Build Kivy APK (No Artifact Upload)
+name: Build Kivy APK
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-  steps:
+    steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
@@ -37,9 +37,3 @@ jobs:
       run: |
         export PATH="$PATH:$(python3 -m site --user-base)/bin"
         buildozer android debug --log-level 2
-        
-    - name: Encode APK to base64
-      run: |
-        echo "==== APK base64 begin ===="
-        base64 -w 0 bin/*.apk
-        echo "==== APK base64 end ===="
